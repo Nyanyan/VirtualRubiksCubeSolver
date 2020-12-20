@@ -58,13 +58,13 @@ for i in range(1, 13):
 
 corner_move_parts = [
     (1, 6, 5, 2), # R
-    (3, 4, 0, 7), # L
+    (3, 4, 7, 0), # L
     (0, 1, 2, 3), # U
     (4, 5, 6, 7), # D
-    (2, 5, 3, 4), # F
+    (2, 5, 4, 3), # F
     (0, 7, 6, 1)  # B
 ]
-co_plus = (1, 2, 1, 2)
+co_plus = (2, 1, 2, 1)
 edge_move_parts = [
     (1, 10, 5, 9), # R
     (3, 8, 7, 11), # L
@@ -130,7 +130,7 @@ def move_co(co, twist):
         for i in range(4):
             n_res[corner_move_parts[twist_type][(i + 1) % 4]] = res[corner_move_parts[twist_type][i]]
             if flip_flag:
-                n_res[corner_move_parts[twist_type][(i + 1) % 4]] += co_plus[(i + 1) % 4]
+                n_res[corner_move_parts[twist_type][(i + 1) % 4]] += co_plus[i]
                 n_res[corner_move_parts[twist_type][(i + 1) % 4]] %= 3
         res = n_res
     return res
@@ -195,9 +195,9 @@ def co2idx(co):
     return res
 
 def idx2co(idx):
-    res = [-1 for _ in range(8)]
-    for i in range(7):
-        res[6 - i] = idx % 3
+    res = [0 for _ in range(8)]
+    for i in reversed(range(7)):
+        res[i] = idx % 3
         idx //= 3
     res[7] = (3 - sum(res) % 3) % 3
     return res

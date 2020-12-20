@@ -52,11 +52,11 @@ def solver(stickers):
     global phase_solution
     res = []
     cp, co, ep, eo = sticker2arr(stickers)
-    for phase in range(1):
+    for phase in range(2):
         idxes = idxes_init(phase, cp, co, ep, eo)
         dis = distance(phase, idxes)
         phase_solution = []
-        for depth in range(dis, 19):
+        for depth in range(dis, 20):
             print(phase, depth)
             if phase_search(phase, idxes, depth, dis):
                 break
