@@ -39,6 +39,7 @@ while True:
     solution = solver(stickers)
     print('solution found')
     print(solution)
+    print('len is', len(solution))
     solution_str = [twists_key[i] for i in solution]
     pyautogui.press(solution_str)
     print('done')

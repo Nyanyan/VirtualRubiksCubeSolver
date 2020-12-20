@@ -77,9 +77,7 @@ def table_phase1():
         cost += 1
         for twist in range(12):
             n_idx1 = trans_ep[idx1][twist]
-            n_idx2 = idx2
-            for _ in range(loop[1][twist]):
-                n_idx2 = trans[n_idx2][twist]
+            n_idx2 = trans[idx2][twist]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -100,10 +98,8 @@ def table_phase1():
         idx1, idx2, cost = que.popleft()
         cost += 1
         for twist in range(12):
-            n_idx1 = idx1
-            n_idx2 = idx2
-            n_idx1 = trans_ep[n_idx1][twist]
-            n_idx2 = trans[n_idx2][twist]
+            n_idx1 = trans_ep[idx1][twist]
+            n_idx2 = trans[idx2][twist]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -113,5 +109,5 @@ def table_phase1():
             writer.writerow(arr)
 
 
-table_phase0()
-#table_phase1()
+#table_phase0()
+table_phase1()

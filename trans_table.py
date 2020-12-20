@@ -8,7 +8,9 @@ def cp_table():
             print(int(idx / 40320 * 100), 'percent done')
         cp = idx2cp(idx)
         for twist in range(12):
-            n_cp = move_cp(cp, twist)
+            n_cp = [i for i in cp]
+            for _ in range(loop[1][twist]):
+                n_cp = move_cp(n_cp, twist)
             n_idx = cp2idx(n_cp)
             table[idx][twist] = n_idx
     with open('trans_cp.csv', mode='w') as f:
@@ -93,8 +95,8 @@ def eo_table():
             writer.writerow(arr)
     print('done')
 
-#cp_table()
-co_table()
+cp_table()
+#co_table()
 #ep_table_phase0()
 #ep_table_phase1_1()
 #ep_table_phase1_2()

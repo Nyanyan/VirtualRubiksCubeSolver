@@ -19,9 +19,7 @@ def trans(phase, idxes, twist):
         res3 = trans_ep_phase0[idxes[2]][twist]
         return (res1, res2, res3)
     else:
-        res1 = idxes[0]
-        for _ in range(loop[phase][twist]):
-            res1 = trans_cp[res1][twist]
+        res1 = trans_cp[idxes[0]][twist]
         res2 = trans_ep_phase1_1[idxes[1]][twist]
         res3 = trans_ep_phase1_2[idxes[2]][twist]
         return (res1, res2, res3)
@@ -37,10 +35,26 @@ def phase_search(phase, idxes, depth, dis):
     if depth == 0:
         return dis == 0
     depth -= 1
+    l1_twist = phase_solution[-1] if phase_solution else -10
+    l2_twist = phase_solution[-2] if len(phase_solution) >= 2 else -10
+    l1_twist_type = l1_twist // 2
+    l2_twist_type = l2_twist // 2
     for twist in range(12):
+        if phase == 1 and twist % 2 and loop[phase][twist] == 2: # don't turn side counterclockwise in phase1
+            continue
+        if l1_twist_type == twist // 2 and twist - l1_twist: # don't turn the reverse move
+            continue
+        if twist == l1_twist == l2_twist: # don't turn the same move 3 times
+            continue
+        if twist == l1_twist and twist % 2: # don't turn counterclockwise 2 times
+            continue
+        if twist // 2 == l2_twist_type and l1_twist_type // 2 == l2_twist_type // 2: # don't turn the opposite layer 3 times
+            continue
+        if twist == l1_twist and loop[phase][twist] == 2: # don't twist side 180 deg in phase0 or 180 deg 2 times in phase1
+            continue
         n_idxes = trans(phase, idxes, twist)
         n_dis = distance(phase, n_idxes)
-        if n_dis > dis or n_dis > depth:
+        if n_dis > depth:
             continue
         phase_solution.append(twist)
         if phase_search(phase, n_idxes, depth, n_dis):
@@ -56,7 +70,7 @@ def solver(stickers):
         idxes = idxes_init(phase, cp, co, ep, eo)
         dis = distance(phase, idxes)
         phase_solution = []
-        for depth in range(dis, 20):
+        for depth in range(dis, max_depth[phase]):
             print(phase, depth)
             if phase_search(phase, idxes, depth, dis):
                 break
@@ -71,6 +85,7 @@ def solver(stickers):
                 res.append(twist)
     return res
 
+max_depth = [13, 19]
 trans_co = []
 with open('trans_co.csv', mode='r') as f:
     for line in map(str.strip, f):
