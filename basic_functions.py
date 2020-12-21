@@ -42,10 +42,13 @@ yellow: 5
 '''
 
 
-#              0    1    2    3    4    5    6    7    8    9    10   11
-#              R    R'   L    L'   U    U'   D    D'   F    F'   B    B'
-twists_key = ['i', 'k', 'd', 'e', 'j', 'f', 's', 'l', 'h', 'g', 'w', 'o']
-loop = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2]]
+#               0        1         2      3         4        5      6         7        8      9       10        11     12        13        14     15       16        17
+#               R        R2        R'     L         L2       L'     U        U2        U'     D        D2        D'     F        F2        F'     B        B2        B'
+twists_key = [['i'], ['i', 'i'], ['k'], ['d'], ['d', 'd'], ['e'], ['j'], ['j', 'j'], ['f'], ['s'], ['s', 's'], ['l'], ['h'], ['h', 'h'], ['g'], ['w'], ['w', 'w'], ['o']]
+candidate = [
+    (0, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17), # phase0
+    (1, 4, 6, 7, 8, 9, 10, 11, 13, 16)                # phase1
+]
 
 corner_places = [(0, 36, 29), (2, 27, 20), (8, 18, 11), (6, 9, 38), (45, 44, 15), (47, 17, 24), (53, 26, 33), (51, 35, 42)]
 corner_colors = [(0, 4, 3),   (0, 3, 2),   (0, 2, 1),   (0, 1, 4),  (5, 4, 1),    (5, 1, 2),    (5, 2, 3),    (5, 3, 4)   ]
@@ -110,8 +113,8 @@ def sticker2arr(stickers):
     return cp, co, ep, eo
 
 def move_cp(cp, twist):
-    twist_type = twist // 2
-    twist_amount = 3 if twist % 2 else 1
+    twist_type = twist // 3
+    twist_amount = twist % 3 + 1
     res = [i for i in cp]
     for _ in range(twist_amount):
         n_res = [i for i in res]
@@ -121,10 +124,10 @@ def move_cp(cp, twist):
     return res
 
 def move_co(co, twist):
-    twist_type = twist // 2
-    twist_amount = 3 if twist % 2 else 1
+    twist_type = twist // 3
+    twist_amount = twist % 3 + 1
     res = [i for i in co]
-    flip_flag = twist_type != 2 and twist_type != 3
+    flip_flag = twist_type != 2 and twist_type != 3 and twist_amount != 2
     for _ in range(twist_amount):
         n_res = [i for i in res]
         for i in range(4):
@@ -136,8 +139,8 @@ def move_co(co, twist):
     return res
 
 def move_ep(ep, twist):
-    twist_type = twist // 2
-    twist_amount = 3 if twist % 2 else 1
+    twist_type = twist // 3
+    twist_amount = twist % 3 + 1
     res = [i for i in ep]
     for _ in range(twist_amount):
         n_res = [i for i in res]
@@ -147,10 +150,10 @@ def move_ep(ep, twist):
     return res
 
 def move_eo(eo, twist):
-    twist_type = twist // 2
-    twist_amount = 3 if twist % 2 else 1
+    twist_type = twist // 3
+    twist_amount = twist % 3 + 1
     res = [i for i in eo]
-    flip_flag = int(twist_type == 4 or twist_type == 5)
+    flip_flag = (twist_type == 4 or twist_type == 5) and twist_amount != 2
     for _ in range(twist_amount):
         n_res = [i for i in res]
         for i in range(4):

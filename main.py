@@ -24,11 +24,14 @@ for y in range(3):
     for x in range(3):
         coords.append((dx * x, dy * y))
 
+s = ''
 while True:
-    s = input()
+    #s = input()
     if s == 'exit':
         break
-    sleep(2)
+    sleep(3)
+    pyautogui.press('space')
+    sleep(1)
     print('start inspection')
     stickers = []
     for face in range(6):
@@ -36,10 +39,12 @@ while True:
         pyautogui.press(inspection_commands[face])
         for x, y in coords:
             stickers.append(color(x, y))
+        sleep(0.5)
     solution = solver(stickers)
     print('solution found')
     print(solution)
     print('len is', len(solution))
-    solution_str = [twists_key[i] for i in solution]
-    pyautogui.press(solution_str)
+    solution_str = ''.join(''.join(j for j in twists_key[i]) for i in solution)
+    print('len of type is', len(solution_str))
+    pyautogui.typewrite(solution_str)
     print('done')

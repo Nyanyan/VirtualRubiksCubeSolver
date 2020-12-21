@@ -37,22 +37,14 @@ def phase_search(phase, idxes, depth, dis):
     depth -= 1
     l1_twist = phase_solution[-1] if phase_solution else -10
     l2_twist = phase_solution[-2] if len(phase_solution) >= 2 else -10
-    l1_twist_type = l1_twist // 2
-    l2_twist_type = l2_twist // 2
-    for twist in range(12):
-        if phase == 1 and twist % 2 and loop[phase][twist] == 2: # don't turn side counterclockwise in phase1
+    l1_twist_type = l1_twist // 3
+    l2_twist_type = l2_twist // 3
+    for twist_idx, twist in enumerate(candidate[phase]):
+        if twist // 3 == l1_twist_type: # don't turn same face twice
             continue
-        if l1_twist_type == twist // 2 and twist - l1_twist: # don't turn the reverse move
+        if twist // 3 == l2_twist_type and twist // 6 == l1_twist // 6: # don't turn opposite face 3 times
             continue
-        if twist == l1_twist == l2_twist: # don't turn the same move 3 times
-            continue
-        if twist == l1_twist and twist % 2: # don't turn counterclockwise 2 times
-            continue
-        if twist // 2 == l2_twist_type and l1_twist_type // 2 == l2_twist_type // 2: # don't turn the opposite layer 3 times
-            continue
-        if twist == l1_twist and loop[phase][twist] == 2: # don't twist side 180 deg in phase0 or 180 deg 2 times in phase1
-            continue
-        n_idxes = trans(phase, idxes, twist)
+        n_idxes = trans(phase, idxes, twist_idx)
         n_dis = distance(phase, n_idxes)
         if n_dis > depth:
             continue
@@ -71,20 +63,19 @@ def solver(stickers):
         dis = distance(phase, idxes)
         phase_solution = []
         for depth in range(dis, max_depth[phase]):
-            print(phase, depth)
             if phase_search(phase, idxes, depth, dis):
                 break
         else:
             return [-1]
         for twist in phase_solution:
-            for _ in range(loop[phase][twist]):
-                cp = move_cp(cp, twist)
-                co = move_co(co, twist)
-                ep = move_ep(ep, twist)
-                eo = move_eo(eo, twist)
-                res.append(twist)
+            cp = move_cp(cp, twist)
+            co = move_co(co, twist)
+            ep = move_ep(ep, twist)
+            eo = move_eo(eo, twist)
+            res.append(twist)
     return res
 
+phase_solution = []
 max_depth = [13, 19]
 trans_co = []
 with open('trans_co.csv', mode='r') as f:
@@ -127,7 +118,3 @@ with open('prun_phase1_ep_ep.csv', mode='r') as f:
     for line in map(str.strip, f):
         prun_phase1_ep_ep.append([int(i) for i in line.replace('\n', '').split(',')])
 print('initialize done')
-phase_solution = []
-
-#stickers = [0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 5, 1, 1, 5, 1, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 3, 3, 0, 3, 3, 0, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 3, 5, 5, 3, 5, 5, 3]
-#print(solver(stickers))

@@ -23,9 +23,9 @@ def table_phase0():
     while que:
         idx1, idx2, cost = que.popleft()
         cost += 1
-        for twist in range(12):
-            n_idx1 = trans_ep[idx1][twist]
-            n_idx2 = trans[idx2][twist]
+        for twist_idx, twist in enumerate(candidate[0]):
+            n_idx1 = trans_ep[idx1][twist_idx]
+            n_idx2 = trans[idx2][twist_idx]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -46,9 +46,9 @@ def table_phase0():
     while que:
         idx1, idx2, cost = que.popleft()
         cost += 1
-        for twist in range(12):
-            n_idx1 = trans_ep[idx1][twist]
-            n_idx2 = trans[idx2][twist]
+        for twist_idx, twist in enumerate(candidate[0]):
+            n_idx1 = trans_ep[idx1][twist_idx]
+            n_idx2 = trans[idx2][twist_idx]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -75,9 +75,9 @@ def table_phase1():
     while que:
         idx1, idx2, cost = que.popleft()
         cost += 1
-        for twist in range(12):
-            n_idx1 = trans_ep[idx1][twist]
-            n_idx2 = trans[idx2][twist]
+        for twist_idx, twist in enumerate(candidate[1]):
+            n_idx1 = trans_ep[idx1][twist_idx]
+            n_idx2 = trans[idx2][twist_idx]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -97,9 +97,9 @@ def table_phase1():
     while que:
         idx1, idx2, cost = que.popleft()
         cost += 1
-        for twist in range(12):
-            n_idx1 = trans_ep[idx1][twist]
-            n_idx2 = trans[idx2][twist]
+        for twist_idx, twist in enumerate(candidate[1]):
+            n_idx1 = trans_ep[idx1][twist_idx]
+            n_idx2 = trans[idx2][twist_idx]
             if table[n_idx1][n_idx2] > cost:
                 table[n_idx1][n_idx2] = cost
                 que.append([n_idx1, n_idx2, cost])
@@ -109,5 +109,5 @@ def table_phase1():
             writer.writerow(arr)
 
 
-#table_phase0()
-table_phase1()
+table_phase0()
+#table_phase1()
