@@ -33,7 +33,11 @@ def distance(phase, idxes):
 def phase_search(phase, idxes, depth, dis):
     global phase_solution
     if depth == 0:
-        return dis == 0
+        if dis == 0:
+            return [[i for i in phase_solution]]
+        else:
+            return []
+    res = []
     depth -= 1
     l1_twist = phase_solution[-1] if phase_solution else -10
     l2_twist = phase_solution[-2] if len(phase_solution) >= 2 else -10
@@ -49,34 +53,53 @@ def phase_search(phase, idxes, depth, dis):
         if n_dis > depth:
             continue
         phase_solution.append(twist)
-        if phase_search(phase, n_idxes, depth, n_dis):
-            return True
+        sol = phase_search(phase, n_idxes, depth, n_dis)
+        if phase == 1 and sol: # only one solution needed
+            return sol
+        res.extend(sol)
         phase_solution.pop()
-    return False
+    return res
 
 def solver(stickers):
     global phase_solution
-    res = []
     cp, co, ep, eo = sticker2arr(stickers)
+    search_lst = [[cp, co, ep, eo, []]]
+    n_search_lst = []
     for phase in range(2):
-        idxes = idxes_init(phase, cp, co, ep, eo)
-        dis = distance(phase, idxes)
-        phase_solution = []
-        for depth in range(dis, max_depth[phase]):
-            if phase_search(phase, idxes, depth, dis):
-                break
-        else:
-            return [-1]
-        for twist in phase_solution:
-            cp = move_cp(cp, twist)
-            co = move_co(co, twist)
-            ep = move_ep(ep, twist)
-            eo = move_eo(eo, twist)
-            res.append(twist)
-    return res
+        l = max_depth[phase]
+        for cp, co, ep, eo, last_solution in search_lst:
+            idxes = idxes_init(phase, cp, co, ep, eo)
+            dis = distance(phase, idxes)
+            phase_solution = []
+            for depth in range(dis, l - len(last_solution)):
+                sol = phase_search(phase, idxes, depth, dis)
+                if sol:
+                    for solution in sol:
+                        n_cp = [i for i in cp]
+                        n_co = [i for i in co]
+                        n_ep = [i for i in ep]
+                        n_eo = [i for i in eo]
+                        n_solution = [i for i in last_solution]
+                        for twist in solution:
+                            n_cp = move_cp(n_cp, twist)
+                            n_co = move_co(n_co, twist)
+                            n_ep = move_ep(n_ep, twist)
+                            n_eo = move_eo(n_eo, twist)
+                            n_solution.append(twist)
+                        n_search_lst.append([n_cp, n_co, n_ep, n_eo, n_solution])
+                        if phase == 1:
+                            l = min(l, len(n_solution) - 1)
+                    if phase == 1:
+                        break
+        search_lst = [[i for i in j] for j in n_search_lst]
+        n_search_lst = []
+        print('phase', phase, len(search_lst), 'solutions found')
+    solution_lens = [len(i[4]) for i in search_lst]
+    adopt_solution_idx = solution_lens.index(min(solution_lens))
+    return search_lst[adopt_solution_idx][4]
 
 phase_solution = []
-max_depth = [13, 19]
+max_depth = [13, 31]
 trans_co = []
 with open('trans_co.csv', mode='r') as f:
     for line in map(str.strip, f):
