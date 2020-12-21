@@ -39,7 +39,7 @@ while True:
         pyautogui.press(inspection_commands[face])
         for x, y in coords:
             stickers.append(color(x, y))
-        sleep(0.2)
+        sleep(0.1)
     strt = time()
     solution = solver(stickers)
     print('solution found in ', time() - strt, 'sec')

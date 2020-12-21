@@ -110,4 +110,4 @@ def table_phase1():
 
 
 table_phase0()
-#table_phase1()
+table_phase1()
