@@ -94,9 +94,7 @@ def solver(stickers):
         search_lst = [[i for i in j] for j in n_search_lst]
         n_search_lst = []
         print('phase', phase, len(search_lst), 'solutions found')
-    solution_lens = [len(i[4]) for i in search_lst]
-    adopt_solution_idx = solution_lens.index(min(solution_lens))
-    return search_lst[adopt_solution_idx][4]
+    return search_lst[-1][4]
 
 phase_solution = []
 max_depth = [13, 31]
